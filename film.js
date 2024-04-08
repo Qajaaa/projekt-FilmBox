@@ -103,4 +103,165 @@ const filmy = [
 			'Na zámek v podhůří Krkonoš přijíždí jeho nový majitel Štěpán se svojí snoubenkou, krásnou komtesou Blankou, a mladším bratrem Adamem. Cestou kočár nešťastně srazí kolemjdoucí dívku, Adam jí pomůže a ona se do něj zamiluje. Na zámku Adam objeví starou vlašskou knihu, která by měla obsahovat cestu k pokladům. Tajemné značky vlašské knihy však nedokáže vyluštit ani národopisec Jiráček, který v kraji sbírá pověsti a nevychází z údivu nad tím, že zdejší lidé stále věří v Krakonoše. Na zámku se objeví záhadný cizinec a nabídne Štěpánovi, že jej k pokladu za určitých podmínek dovede. Výprava do hor může začít. Naplní se Liduščina láska k Adamovi? Jakou záhadu skrývá starý obraz na zámku Hůrka a co strašlivého se v horách kdysi odehrálo? A kdo je vlastně Krakonoš a jaké je jeho největší tajemství? (csfd.cz, Česká televize)',
 		premiera: '2022-12-24',
 	},
+	{
+		id: 'bahnatka-utoci',
+		nazev: 'Bahňatka útočí',
+		plakat: {
+			url: 'https://img43.rajce.idnes.cz/d4303/18/18996/18996193_e090e7372232e5b63f0026e25f6cd306/images/12339301_10205822707707121_6010422225692328315_o.jpg?ver=0',
+			sirka: 420,
+			vyska: 592,
+		},
+		ochutnavka: 'Horrorový film ze života majitele psa.',
+		popis:
+			'Na zámek v podhůří Krkonoš přijíždí jeho nový majitel Štěpán se svojí snoubenkou, krásnou komtesou Blankou, a mladším bratrem Adamem. Cestou kočár nešťastně srazí kolemjdoucí dívku, Adam jí pomůže a ona se do něj zamiluje. Na zámku Adam objeví starou vlašskou knihu, která by měla obsahovat cestu k pokladům. Tajemné značky vlašské knihy však nedokáže vyluštit ani národopisec Jiráček, který v kraji sbírá pověsti a nevychází z údivu nad tím, že zdejší lidé stále věří v Krakonoše. Na zámku se objeví záhadný cizinec a nabídne Štěpánovi, že jej k pokladu za určitých podmínek dovede. Výprava do hor může začít. Naplní se Liduščina láska k Adamovi? Jakou záhadu skrývá starý obraz na zámku Hůrka a co strašlivého se v horách kdysi odehrálo? A kdo je vlastně Krakonoš a jaké je jeho největší tajemství? (csfd.cz, Česká televize)',
+		premiera: '2015-09-24',
+	},
 ]
+
+const filmId = location.hash.slice(1);
+
+const hledanyFilm = filmy.find(film => film.id === filmId);
+
+const detailFilmu = document.querySelector("#detail-filmu");
+
+detailFilmu.querySelector(".card-title").textContent = hledanyFilm.nazev;
+detailFilmu.querySelector(".card-text").textContent = hledanyFilm.popis;
+detailFilmu.querySelector(".img-fluid").src = hledanyFilm.plakat.url;
+
+const premiera = document.getElementById("premiera");
+const datumPremiery = dayjs(hledanyFilm.premiera).format('D. M. YYYY');
+
+let dnesniDatum = dayjs()
+let rozdilDnu = dayjs(hledanyFilm.premiera).diff(dayjs(), 'days')
+
+
+if (rozdilDnu === 0) {
+    premiera.innerHTML = "Dnes je premiéra!";
+} else if (rozdilDnu > 0) {
+    premiera.innerHTML = `Premiéra <strong>${datumPremiery}</strong>, což je za ${rozdilDni} dní.`;
+} else {
+    premiera.innerHTML = `Premiéra <strong>${datumPremiery}</strong>, což bylo před ${Math.abs(rozdilDnu)} dny.`;
+}
+
+
+const hvezdicky = document.querySelectorAll("#detail-filmu .fa-star");
+let posledniKliknutaHvezdicka = null;
+
+const zvyraznitHvezdicky = (pocet) => {
+    hvezdicky.forEach((hvezdicka, index) => {
+        const cisloHvezdicky = parseInt(hvezdicka.textContent);
+        if (cisloHvezdicky <= pocet) {
+            hvezdicka.classList.remove("far");
+            hvezdicka.classList.add("fas");
+        } else {
+            hvezdicka.classList.remove("fas");
+            hvezdicka.classList.add("far");
+        }
+    });
+};
+
+hvezdicky.forEach((hvezdicka) => {
+    hvezdicka.addEventListener("click", (event) => {
+        const pocetHvezdicek = parseInt(event.target.textContent);
+        zvyraznitHvezdicky(pocetHvezdicek);
+        posledniKliknutaHvezdicka = pocetHvezdicek;
+    });
+
+    hvezdicka.addEventListener("mouseenter", (event) => {
+        const pocetHvezdicek = parseInt(event.target.textContent);
+        zvyraznitHvezdicky(pocetHvezdicek);
+    });
+
+    hvezdicka.addEventListener("mouseleave", () => {
+        zvyraznitHvezdicky(posledniKliknutaHvezdicka || 0);
+    });
+});
+
+const formular = document.querySelector("#note-form")
+formular.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const poleZpravy= document.querySelector("#message-input");
+    const zprava = poleZpravy.value;
+
+    if (zprava === "") {
+        poleZpravy.classList.add("is-invalid");
+		poleZpravy.focus();
+        
+    } else {
+        poleZpravy.classList.remove("is-invalid");
+		poleZpravy.focus();
+    }
+
+    const zaskrtavaciPolicko= document.querySelector("#terms-checkbox");
+    if (zaskrtavaciPolicko.checked === false) {
+        zaskrtavaciPolicko.classList.add("is-invalid");
+		zaskrtavaciPolicko.focus()
+        
+    } else {
+        zaskrtavaciPolicko.classList.remove("is-invalid");
+    }
+
+    if (zprava !== "" && zaskrtavaciPolicko.checked) {
+    	const nahrazeniTextu = document.createElement("p");
+    	nahrazeniTextu.classList.add("card-text");
+    	nahrazeniTextu.textContent = zprava;
+    	formular.replaceWith(nahrazeniTextu);
+	}
+});
+
+const prehravac = document.querySelector("#prehravac");
+
+
+if (prehravac) {
+    const playButton = prehravac.querySelector(".play");
+    const video = prehravac.querySelector("video");
+
+    playButton.addEventListener("click", () => {
+        video.play(); 
+    });
+
+    
+    video.addEventListener("playing", () => {
+        prehravac.classList.add("playing"); 
+    });
+
+    
+    const pauseButton = prehravac.querySelector(".pause");
+    pauseButton.addEventListener("click", () => {
+        video.pause(); 
+    });
+
+    
+    video.addEventListener("pause", () => {
+        prehravac.classList.remove("playing"); 
+    });
+
+    
+    const currentTimeElement = prehravac.querySelector(".current-time");
+
+    
+    video.addEventListener("timeupdate", () => {
+        const currentTime = video.currentTime;
+        const minutes = Math.floor(currentTime / 60); 
+        const seconds = Math.floor(currentTime % 60); 
+        currentTimeElement.textContent = `${minutes}:${seconds}`; 
+    });
+}
+
+const video = prehravac.querySelector("video");
+
+document.addEventListener("keydown", (event) => {
+	if (
+		event.code === "Space" &&
+		event.target.tagName !== "TEXTAREA" &&
+		event.target.tagName !== "INPUT" &&
+		event.target.tagName !== "BUTTON"
+	) {
+		if (video.paused) {
+			video.play();
+		} else {
+			video.pause();
+		}
+	}
+});
