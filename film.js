@@ -219,6 +219,7 @@ if (prehravac) {
 
     playButton.addEventListener("click", () => {
         video.play(); 
+		hideControls ();
     });
 
     
@@ -251,7 +252,7 @@ if (prehravac) {
 
 const video = prehravac.querySelector("video");
 
-document.addEventListener("keydown", (event) => {
+document.addEventListener("mezernik", (event) => {
 	if (
 		event.code === "Space" &&
 		event.target.tagName !== "TEXTAREA" &&
@@ -265,3 +266,24 @@ document.addEventListener("keydown", (event) => {
 		}
 	}
 });
+
+
+
+
+const showControls = () => {
+    const controls = document.getElementsByClassName('player-controls')[0]
+    const hideInterval = setInterval(function(){
+        controls.style.display = 'block'
+        console.log("ukazu")
+    },1000)
+	setTimeout(function( ) { clearInterval( hideInterval ); }, 1000);
+};
+
+const hideControls = () => {
+    const controls = document.getElementsByClassName('player-controls')[0]
+    const hideInterval = setInterval(function(){
+        controls.style.display = 'none'
+    },3000)
+
+    setTimeout(function( ) { clearInterval( hideInterval ); }, 3000);
+};
